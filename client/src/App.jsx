@@ -1,14 +1,25 @@
 import { useEffect, useState } from "react";
 
 const API = import.meta.env.VITE_API_URL || "http://localhost:3001";
+const MCP_URL = `${API}/mcp`;
+
+const MCP_TOOLS = [
+  ["get_about", "mi bio y contactos"],
+  ["get_projects", "mis proyectos (filtrables por tecnología)"],
+  ["get_guestbook", "los últimos mensajes del libro de visitas"],
+  ["sign_guestbook", "firmar el libro de visitas"]
+];
 
 export default function App() {
+  const [about, setAbout] = useState(null);
   const [projects, setProjects] = useState([]);
   const [entries, setEntries] = useState([]);
   const [form, setForm] = useState({ name: "", message: "" });
   const [status, setStatus] = useState("");
+  const [copied, setCopied] = useState(false);
 
   useEffect(() => {
+    fetch(`${API}/api/about`).then((r) => r.json()).then(setAbout).catch(() => {});
     fetch(`${API}/api/projects`).then((r) => r.json()).then(setProjects).catch(() => {});
     fetch(`${API}/api/guestbook`).then((r) => r.json()).then(setEntries).catch(() => {});
   }, []);
@@ -32,15 +43,26 @@ export default function App() {
     }
   }
 
+  async function copyMcpUrl() {
+    try {
+      await navigator.clipboard.writeText(MCP_URL);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch {
+      /* el navegador no dejó copiar */
+    }
+  }
+
   return (
     <>
       <header className="hero">
         <p className="kicker">Hola, soy</p>
-        <h1>Tu Nombre</h1>
-        <p className="lead">Desarrollador web y de videojuegos. Hago cosas con React, Node y Godot.</p>
+        <h1>{about?.name ?? "Winki"}</h1>
+        <p className="lead">{about?.bio ?? "Desarrollador web y de videojuegos. Hago cosas con React, Node y Godot."}</p>
         <nav>
           <a href="#proyectos">Proyectos</a>
           <a href="#sobre-mi">Sobre mí</a>
+          <a href="#mcp">MCP</a>
           <a href="#libro">Libro de visitas</a>
         </nav>
       </header>
@@ -66,7 +88,33 @@ export default function App() {
 
         <section id="sobre-mi">
           <h2>Sobre mí</h2>
-          <p>Cuéntate aquí: qué haces, qué te interesa, qué estás aprendiendo y cómo contactarte.</p>
+          <p>{about?.role ?? "Desarrollador web y de videojuegos"}</p>
+          {about?.links && (
+            <div className="links">
+              {Object.entries(about.links).map(([k, v]) => (
+                <a key={k} href={v} target="_blank" rel="noreferrer">{k}</a>
+              ))}
+            </div>
+          )}
+        </section>
+
+        <section id="mcp">
+          <h2>Conecta mi portfolio a tu IA 🤖</h2>
+          <p>
+            Este portfolio es también un <strong>servidor MCP</strong> (Model Context Protocol).
+            Añádelo como conector en Claude u otro cliente MCP y pregúntale por mí.
+          </p>
+          <div className="mcp-url">
+            <code>{MCP_URL}</code>
+            <button type="button" onClick={copyMcpUrl}>{copied ? "¡Copiado!" : "Copiar"}</button>
+          </div>
+          <p className="muted">Herramientas disponibles:</p>
+          <ul className="tools">
+            {MCP_TOOLS.map(([name, desc]) => (
+              <li key={name}><code>{name}</code>: {desc}</li>
+            ))}
+          </ul>
+          <p className="muted">Prueba a preguntar: “¿Qué proyectos con Godot tiene Winki?”</p>
         </section>
 
         <section id="libro">
@@ -81,13 +129,15 @@ export default function App() {
           </form>
           <ul className="entries">
             {entries.map((e) => (
-              <li key={e.id}><strong>{e.name}</strong>: {e.message}</li>
+              <li key={e.id}>
+                <strong>{e.name}</strong>{e.source === "mcp" && <span title="Firmado por una IA vía MCP"> 🤖</span>}: {e.message}
+              </li>
             ))}
           </ul>
         </section>
       </main>
 
-      <footer>© {new Date().getFullYear()} · Hecho con React + Node</footer>
+      <footer>© {new Date().getFullYear()} · Hecho con React + Node + MCP</footer>
     </>
   );
 }

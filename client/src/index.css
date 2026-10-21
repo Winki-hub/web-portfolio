@@ -29,3 +29,9 @@ textarea { min-height: 90px; resize: vertical; }
 button { justify-self: start; background: var(--accent); color: #111; border: 0; border-radius: 8px; padding: 10px 20px; font-weight: 600; cursor: pointer; }
 .entries { padding-left: 18px; }
 footer { padding-top: 32px; padding-bottom: 48px; color: var(--muted); font-size: 0.9rem; }
+code { font-family: ui-monospace, "Cascadia Code", Consolas, monospace; font-size: 0.9em; }
+.mcp-url { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 12px 14px; }
+.mcp-url code { color: var(--accent); overflow-wrap: anywhere; flex: 1; min-width: 0; }
+.mcp-url button { padding: 6px 14px; }
+.tools { padding-left: 18px; }
+.tools code { color: var(--accent); }

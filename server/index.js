@@ -1,52 +1,63 @@
 import express from "express";
 import cors from "cors";
+import { StreamableHTTPServerTransport } from "@modelcontextprotocol/sdk/server/streamableHttp.js";
+import { about, projects, listGuestbook, addGuestbookEntry } from "./data.js";
+import { createMcpServer } from "./mcp.js";
 
 const app = express();
 const PORT = process.env.PORT || 3001;
-// En producción pon aquí la URL de tu web en Vercel (variable CLIENT_URL en Render)
+// URL de la web en Vercel (variable CLIENT_URL en Render)
 const CLIENT_URL = process.env.CLIENT_URL || "http://localhost:5173";
 
-app.use(cors({ origin: CLIENT_URL }));
 app.use(express.json());
 
-// --- Proyectos del portfolio (edítalos a tu gusto) ---
-const projects = [
-  {
-    id: 1,
-    title: "Winkiripinki, el libro",
-    description: "Videojuego hecho en Godot.",
-    tags: ["Godot", "GDScript"],
-    url: "",
-    repo: ""
-  },
-  {
-    id: 2,
-    title: "Este portfolio",
-    description: "Web full-stack con React + Node/Express, desplegada gratis en Vercel y Render.",
-    tags: ["React", "Node", "Express"],
-    url: "",
-    repo: ""
+// ---------- API REST para la web (solo tu web puede llamarla) ----------
+const api = express.Router();
+api.use(cors({ origin: CLIENT_URL }));
+
+api.get("/health", (req, res) => res.json({ ok: true }));
+api.get("/about", (req, res) => res.json(about));
+api.get("/projects", (req, res) => res.json(projects));
+api.get("/guestbook", (req, res) => res.json(listGuestbook()));
+api.post("/guestbook", (req, res) => {
+  try {
+    const entry = addGuestbookEntry(req.body?.name, req.body?.message, "web");
+    res.status(201).json(entry);
+  } catch (err) {
+    res.status(400).json({ error: err.message });
   }
-];
+});
+app.use("/api", api);
 
-// --- Libro de visitas (en memoria: se vacía si el servidor se reinicia) ---
-const guestbook = [];
+// ---------- Servidor MCP (público: cualquier cliente MCP puede conectarse) ----------
+// Modo "stateless": cada petición crea su propio servidor y transporte.
+app.use("/mcp", cors({ origin: "*", exposedHeaders: ["Mcp-Session-Id"] }));
 
-app.get("/api/health", (req, res) => res.json({ ok: true }));
-
-app.get("/api/projects", (req, res) => res.json(projects));
-
-app.get("/api/guestbook", (req, res) => res.json(guestbook.slice(-50).reverse()));
-
-app.post("/api/guestbook", (req, res) => {
-  const name = String(req.body?.name ?? "").trim().slice(0, 40);
-  const message = String(req.body?.message ?? "").trim().slice(0, 280);
-  if (!name || !message) {
-    return res.status(400).json({ error: "Nombre y mensaje son obligatorios" });
+app.post("/mcp", async (req, res) => {
+  const server = createMcpServer();
+  const transport = new StreamableHTTPServerTransport({ sessionIdGenerator: undefined });
+  res.on("close", () => {
+    transport.close();
+    server.close();
+  });
+  try {
+    await server.connect(transport);
+    await transport.handleRequest(req, res, req.body);
+  } catch (err) {
+    console.error("Error MCP:", err);
+    if (!res.headersSent) {
+      res.status(500).json({ jsonrpc: "2.0", error: { code: -32603, message: "Error interno" }, id: null });
+    }
   }
-  const entry = { id: Date.now(), name, message, date: new Date().toISOString() };
-  guestbook.push(entry);
-  res.status(201).json(entry);
 });
 
-app.listen(PORT, () => console.log(`API escuchando en http://localhost:${PORT}`));
+// En modo stateless no hay streams GET ni sesiones que borrar.
+const methodNotAllowed = (req, res) =>
+  res.status(405).json({ jsonrpc: "2.0", error: { code: -32000, message: "Método no permitido" }, id: null });
+app.get("/mcp", methodNotAllowed);
+app.delete("/mcp", methodNotAllowed);
+
+app.listen(PORT, () => {
+  console.log(`API escuchando en http://localhost:${PORT}`);
+  console.log(`MCP disponible en http://localhost:${PORT}/mcp`);
+});
