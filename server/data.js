@@ -50,6 +50,13 @@ export const projects = [
     repo: ""
   },
   {
+    id: 3,
+    title: "Pang-Earth",
+    description: "Plataformas 2D inspirado en el arcade Pang: en vez de burbujas, revientas animales mutantes creados por un científico-político villano. Tiene tienda de puntos, estadísticas de personaje y vidas en forma de corazones. Mi primer proyecto en Unity/C#, hecho en unos tres meses durante un bootcamp de videojuegos. Prototipo jugable en el navegador.",
+    tags: ["Unity", "C#", "Videojuego"],
+    url: "https://winkiripinki.itch.io/pang-earth"
+  },
+  {
     id: 2,
     title: "Este portfolio",
     description: "Web full-stack con React + Node/Express, desplegada gratis en Vercel y Render. Incluye un servidor MCP para que las IAs puedan consultarlo.",
