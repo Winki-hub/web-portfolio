@@ -1,0 +1,72 @@
+// Datos del CV que la web pinta al instante (sin esperar al servidor).
+// Si cambias algo aquí, cámbialo también en server/data.js para que el MCP diga lo mismo.
+
+export const profile = {
+  name: "Lorenzo García-Arévalo Acosta",
+  role: "Fullstack Developer · MERN",
+  availability: "Incorporación inmediata",
+  photo: "/foto.jpg", // pon tu foto en client/public/foto.jpg
+  initials: "LG",
+  bio: "Cuatro años construyendo producto real en una plataforma educativa: del código a las decisiones de arquitectura. Me mueve seguir creciendo, trabajar en equipo y aprender tanto de los aciertos como de los errores.",
+  contact: [
+    { type: "mail", label: "Lgaa.developer@gmail.com", href: "mailto:Lgaa.developer@gmail.com" },
+    { type: "web", label: "linkedin.com/in/lorenzo-garcía-arévalo", href: "https://www.linkedin.com/in/lorenzo-garc%C3%ADa-ar%C3%A9valo" },
+    { type: "code", label: "github.com/Winki-hub", href: "https://github.com/Winki-hub" },
+    { type: "pin", label: "Gran Canaria, España · Remoto" }
+  ],
+  languages: [
+    { name: "Español", level: "Nativo" },
+    { name: "Inglés", level: "Medio-Alto" }
+  ],
+  skills: [
+    { name: "JavaScript", level: 92 },
+    { name: "React", level: 85 },
+    { name: "Node.js / Express", level: 78 },
+    { name: "HTML / CSS / Tailwind", level: 85 },
+    { name: "MySQL / MariaDB", level: 75 },
+    { name: "Git / GitHub", level: 85 },
+    { name: "Docker", level: 50 },
+    { name: "AWS (básico)", level: 35 }
+  ],
+  experience: [
+    {
+      company: "Insendi",
+      rol: "Fullstack Developer — Junior → Mid-level",
+      periodo: "2022-2026 · Remoto (sede Canarias)",
+      producto: "Plataforma de e-learning (LMS)",
+      stack: ["React", "JavaScript", "Node.js", "MySQL", "Docker", "Git", "Jira"],
+      aportes: [
+        "Desarrollo end-to-end: frontend en React/JavaScript, backend en Node.js, persistencia en MySQL, con librerías de estilos propias del equipo.",
+        "Integración LTI con Canvas LMS: sincronización de sesión y datos según el punto de acceso del cliente. Equipo de ~10 personas, entregado en 6 meses.",
+        "Progresión de junior a nivel mid-level reconocido tras 3 años, asumiendo más responsabilidad técnica y de producto."
+      ]
+    }
+  ],
+  education: [
+    { title: "Técnico Superior en Desarrollo de Aplicaciones Web", place: "CIFP Villa de Agüimes", years: "2019-2021" },
+    { title: "Bootcamp Fullstack", place: "SPEGC-EOI", years: "2021-2022" },
+    { title: "MERN Full Stack", place: "Udemy", years: "2021" }
+  ],
+  courses: [
+    "Desarrollo de productos audiovisuales interactivos — Cesur (2019)",
+    "Introducción a la programación en Unity3D / C# (2022)"
+  ]
+};
+
+// Se muestran mientras el servidor despierta; luego se sustituyen por los de la API.
+export const fallbackProjects = [
+  {
+    id: 1,
+    title: "Winkiripinki, el libro",
+    description: "Videojuego hecho en Godot.",
+    tags: ["Godot", "GDScript"]
+  },
+  {
+    id: 2,
+    title: "Este portfolio",
+    description: "Web full-stack con React + Node/Express, desplegada gratis en Vercel y Render. Incluye un servidor MCP para que las IAs puedan consultarlo.",
+    tags: ["React", "Node", "Express", "MCP"],
+    url: "https://web-portfolio-omega-ten.vercel.app",
+    repo: "https://github.com/Winki-hub/web-portfolio"
+  }
+];

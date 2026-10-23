@@ -14,7 +14,7 @@ export function createMcpServer() {
     "get_about",
     {
       title: "Sobre Winki",
-      description: "Devuelve la bio de Winki, su rol y sus enlaces de contacto.",
+      description: "Devuelve el perfil profesional de Lorenzo (Winki): bio, experiencia, formación, stack, idiomas y contacto.",
       annotations: { readOnlyHint: true }
     },
     async () => asText(about)
