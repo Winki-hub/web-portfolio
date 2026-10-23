@@ -186,6 +186,28 @@ export default function App() {
           ))}
         </section>
 
+        <section className="case">
+          <SectionTitle icon="code" id="caso-lti">{profile.caseStudy.title}</SectionTitle>
+          <dl className="case-grid">
+            <div>
+              <dt>El problema</dt>
+              <dd>{profile.caseStudy.context}</dd>
+            </div>
+            <div>
+              <dt>Qué construimos</dt>
+              <dd>{profile.caseStudy.built}</dd>
+            </div>
+            <div>
+              <dt>Retos</dt>
+              <dd><ul>{profile.caseStudy.challenges.map((c) => <li key={c}>{c}</li>)}</ul></dd>
+            </div>
+            <div>
+              <dt>Mis decisiones</dt>
+              <dd><ul>{profile.caseStudy.decisions.map((d) => <li key={d}>{d}</li>)}</ul></dd>
+            </div>
+          </dl>
+        </section>
+
         <section>
           <SectionTitle icon="folder" id="proyectos">Proyectos</SectionTitle>
           <ul className="projects">

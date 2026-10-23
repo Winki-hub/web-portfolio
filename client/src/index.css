@@ -126,6 +126,13 @@ section { margin-top: 36px; }
 }
 .copy:hover, .guestbook button:hover { background: var(--plum-2); }
 
+/* Caso de estudio */
+.case .section-title { text-transform: none; letter-spacing: 0.02em; font-size: 1rem; }
+.case-grid { margin: 0; display: grid; gap: 18px; border-left: 4px solid var(--plum); padding-left: 20px; }
+.case-grid dt { font-family: var(--mono); font-size: 0.8rem; font-weight: 700; margin-bottom: 2px; }
+.case-grid dd { margin: 0; max-width: 66ch; }
+.case-grid ul { margin: 0; padding-left: 18px; display: grid; gap: 6px; }
+
 /* Proyectos */
 .projects { list-style: none; padding: 0; margin: 0; display: grid; gap: 14px; }
 .project { border-left: 4px solid var(--plum); padding: 4px 0 4px 18px; }
